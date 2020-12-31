@@ -9,8 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate (models) {
+    static associate ({ Friend }) {
       // define association here
+      this.hasMany(Friend, { foreignKey: 'friendUserId', as: 'friends' })
     }
   };
   User.init({
@@ -24,9 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'User must have a name' },
-        notEmpty: { msg: 'Name is required' },
-        min: 3,
-        max: 255
+        notEmpty: { msg: 'Name is required' }
       }
     },
     email: {
@@ -35,8 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notNull: { msg: 'User must have an email' },
         notEmpty: { msg: 'Email is required' },
-        min: 3,
-        max: 255,
         isEmail: { msg: 'Must be a valid email' }
       }
     },
@@ -45,8 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'User must have an password' },
-        notEmpty: { msg: 'Password is required' },
-        max: 512
+        notEmpty: { msg: 'Password is required' }
       }
     },
     avatar: {
@@ -61,42 +57,26 @@ module.exports = (sequelize, DataTypes) => {
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        min: 3,
-        max: 255
-      }
+      allowNull: false
     },
     lat: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        max: 255
-      },
       defaultValue: '0'
     },
     lng: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        max: 255
-      },
       defaultValue: '0'
     },
     bio: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        max: 255
-      },
       defaultValue: 'Hi there, I\'m using EasyChat!'
     },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        max: 255
-      },
       defaultValue: 'offline'
     }
   }, {

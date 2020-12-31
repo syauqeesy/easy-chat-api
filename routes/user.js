@@ -2,7 +2,8 @@ require('dotenv').config()
 const router = require('express').Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { User } = require('../models')
+const { Op } = require('sequelize')
+const { User, Friend } = require('../models')
 const verifyUser = require('../middlewares/verifyUser')
 const upload = require('../middlewares/upload')
 const fs = require('fs')
@@ -134,6 +135,56 @@ module.exports = router
       return res.status(200).json({
         status: 'Success',
         message: 'User data updated!'
+      })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({
+        status: 'Failed',
+        message: 'Internal server error!'
+      })
+    }
+  })
+  .post('/add-friend/:username', verifyUser, async (req, res) => {
+    const { username } = req.params
+    try {
+      const friend = await User.findOne({ where: { username } })
+      if (!friend) {
+        return res.status(404).json({
+          status: 'Failed',
+          message: 'User not found!'
+        })
+      }
+
+      const user = await User.findOne({ where: { uuid: req.user.userUuid } })
+      if (!user) {
+        return res.status(404).json({
+          status: 'Failed',
+          message: 'User not found!'
+        })
+      }
+
+      const alreadyFriend = await Friend.findOne({
+        where: {
+          [Op.and]: [
+            { userId: user.id },
+            { friendUserId: friend.id }
+          ]
+        },
+        include: { model: User, as: 'friendData' }
+      })
+
+      if (alreadyFriend) {
+        return res.status(400).json({
+          status: 'Failed',
+          message: 'User with that username is already become your friend!'
+        })
+      }
+
+      const newFriend = await Friend.create({ userId: user.id, friendUserId: friend.id })
+      return res.status(201).json({
+        status: 'Success',
+        message: 'Added new friend!',
+        friend: newFriend
       })
     } catch (error) {
       console.log(error)
