@@ -89,7 +89,7 @@ module.exports = router
       return res.status(200).json({
         status: 'Success',
         message: 'User found!',
-        user
+        user: { ...user.dataValues, avatar: `${process.env.BASE_URL}/images/${user.avatar}` }
       })
     } catch (error) {
       console.log(error)
