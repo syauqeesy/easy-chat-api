@@ -26,6 +26,11 @@ module.exports = router
         userUuid: user.uuid
       })
     } catch (error) {
-      return res.status(400).json(error)
+      console.log(error)
+      return res.status(500).json({
+        status: 'Failed',
+        message: 'Internal server error!'
+      })
     }
   })
+  .post('/login')
