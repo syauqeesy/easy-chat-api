@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { User } = require('../models')
 const verifyUser = require('../middlewares/verifyUser')
+const upload = require('../middlewares/upload')
+const fs = require('fs')
 
 module.exports = router
   .post('/register', async (req, res) => {
@@ -88,6 +90,50 @@ module.exports = router
         status: 'Success',
         message: 'User found!',
         user
+      })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({
+        status: 'Failed',
+        message: 'Internal server error!'
+      })
+    }
+  })
+  .patch('/:uuid', [verifyUser, upload], async (req, res) => {
+    const { uuid } = req.params
+    const { name, email, phonenumber, username, lat, lng, bio, status } = req.body
+    try {
+      const user = await User.findOne({ where: { uuid } })
+      if (!user) {
+        return res.status(404).json({
+          status: 'Failed',
+          message: 'User not found!'
+        })
+      }
+
+      if (req.file) {
+        if (user.avatar !== 'user_default.jpg') {
+          fs.unlink(`./images/${user.avatar}`, () => {
+            //
+          })
+        }
+        user.avatar = req.file.filename
+      }
+
+      user.name = name || user.name
+      user.email = email || user.email
+      user.phonenumber = phonenumber || user.phonenumber
+      user.username = username || user.username
+      user.lat = lat || user.lat
+      user.lng = lng || user.lng
+      user.bio = bio || user.bio
+      user.status = status || user.status
+
+      await user.save()
+
+      return res.status(200).json({
+        status: 'Success',
+        message: 'User data updated!'
       })
     } catch (error) {
       console.log(error)

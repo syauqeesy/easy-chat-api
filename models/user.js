@@ -52,9 +52,6 @@ module.exports = (sequelize, DataTypes) => {
     avatar: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        max: 255
-      },
       defaultValue: 'user_default.jpg'
     },
     phonenumber: {
