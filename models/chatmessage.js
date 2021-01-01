@@ -3,34 +3,37 @@ const {
   Model
 } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-  class Friend extends Model {
+  class ChatMessage extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate ({ User }) {
+    static associate (models) {
       // define association here
-      this.belongsTo(User, { foreignKey: 'friendUserId', as: 'friendData' })
-      this.belongsTo(User, { foreignKey: 'userId', as: 'userData' })
     }
   };
-  Friend.init({
+  ChatMessage.init({
     uuid: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
     },
-    userId: {
+    chatId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    friendUserId: {
+    senderId: {
       type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    body: {
+      type: DataTypes.STRING(512),
       allowNull: false
     }
   }, {
     sequelize,
-    modelName: 'Friend'
+    modelName: 'ChatMessage'
   })
-  return Friend
+  return ChatMessage
 }

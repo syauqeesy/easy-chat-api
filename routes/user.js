@@ -170,7 +170,10 @@ module.exports = router
             { friendUserId: friend.id }
           ]
         },
-        include: { model: User, as: 'friendData' }
+        include: [
+          { model: User, as: 'friendData' },
+          { model: User, as: 'userData' }
+        ]
       })
 
       if (alreadyFriend) {

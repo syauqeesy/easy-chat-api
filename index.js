@@ -5,6 +5,7 @@ const socketio = require('socket.io')
 
 const { sequelize } = require('./models')
 const user = require('./routes/user')
+const chat = require('./routes/chat')
 
 const app = express()
 const server = http.createServer(app)
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/images', express.static('./images'))
 
 app.use('/api/users', user)
+app.use('/api/chats', chat)
 
 io.on('connection', _ => {
 
