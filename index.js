@@ -49,6 +49,11 @@ io.on('connection', socket => {
 })
 
 server.listen(process.env.PORT, async () => {
-  await sequelize.authenticate()
   console.log(`Server running on port ${process.env.PORT}`)
+  try {
+    await sequelize.authenticate()
+    console.log('database connected')
+  } catch (error) {
+    console.log(error)
+  }
 })

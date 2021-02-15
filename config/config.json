@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
+    "username": "syauqeesy",
+    "password": "sauki123",
     "database": "easychat",
     "host": "127.0.0.1",
     "dialect": "mysql",
