@@ -103,6 +103,13 @@ module.exports = router
       ]
     })
 
+    if(!chats) {
+      return res.status(404).json({
+        status: 'Failed',
+        message: 'Chats not found!'
+      })
+    }
+
     const userChats = []
     for (const chat of chats.chats) {
       let toUser = {}
@@ -145,7 +152,7 @@ module.exports = router
   const { uuid } = req.params
   try {
     const chat = await Chat.findOne({ where: { uuid: uuid } })
-    const messages = await ChatMessage.findAll({ where: { chatId: chat.id }, order: [['createdAt', 'DESC']] })
+    const messages = await ChatMessage.findAll({ where: { chatId: chat.id }, order: [['createdAt', 'ASC']] })
 
     return res.status(200).json({
       status: 'Success',

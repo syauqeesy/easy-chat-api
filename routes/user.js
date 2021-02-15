@@ -65,6 +65,7 @@ module.exports = router
         message: 'Login success!',
         data: {
           userUuid: user.uuid,
+          userId: user.id,
           token
         }
       })
@@ -79,7 +80,14 @@ module.exports = router
   .get('/:uuid', verifyUser, async (req, res) => {
     const { uuid } = req.params
     try {
-      const user = await User.findOne({ where: { uuid } })
+      const user = await User.findOne({
+        where: {
+          [Op.or]: [
+            { uuid },
+            { id: uuid }
+          ]
+        }
+      })
       if (!user) {
         return res.status(404).json({
           status: 'Failed',
